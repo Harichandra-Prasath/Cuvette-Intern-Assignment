@@ -1,14 +1,17 @@
 from django.shortcuts import render
 from .forms import *
-from django.http import HttpResponseRedirect
-from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect,JsonResponse
+from .models import User
+from django.contrib.auth import authenticate,login,logout
 from django.db import IntegrityError
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 
 
 # Register View
-def register(request):
+def register_view(request):
     if request.method=="POST":
         form = Register_form(request.POST)
 
@@ -20,7 +23,8 @@ def register(request):
             # Password Matching check
             if form.cleaned_data["Password"]!=form.cleaned_data["ConfirmPassword"]:
                 return render(request,"core/register.html",{
-                    "message":"Passwords did not match.Try again"     # sending error context
+                    "message":"Passwords did not match.Try again",     # sending error context
+                    "form":form
                 })            
             password = form.cleaned_data["Password"] # password after check
 
@@ -33,7 +37,8 @@ def register(request):
                 user.save()
             except IntegrityError:             
                 return render(request,"core/register.hmtl",{
-                    "message":"Username already Exists.Try again"
+                    "message":"Username already Exists.Try again",
+                    "form":form
                 })
                 # we are using integrity error to catch the duplication in db
             return HttpResponseRedirect(reverse("login"))
@@ -48,7 +53,54 @@ def register(request):
 # login view
 def login_view(request):
     if request.method=="POST":
-        pass
+        form = Login_form(request.POST)
+
+        if form.is_valid():
+            Id_field = form.cleaned_data["IdField"] # Can be either username or email
+            password = form.cleaned_data["Password"]
 
 
-    return render(request,"core/login.html")
+            # checking by exists function to get whether user entered username or email
+            is_username =  User.objects.filter(username=Id_field).exists() 
+            is_email = User.objects.filter(email=Id_field).exists()       
+
+            # Individual cases for email and username
+            if is_username:
+                user = authenticate(request,username=Id_field,password=password)
+                if user is not None:
+                    login(request,user)
+                    return JsonResponse({"message":"success"})
+                    #return HttpResponseRedirect(reverse("success"))
+                else:
+                    return render(request, "core/login.html", {
+                        "message": "Invalid Credentials",
+                        "form":form
+                    })
+            elif is_email:
+                username = User.objects.get(email=Id_field).username
+                user = authenticate(request,username=username,password=password)
+                if user is not None:
+                    login(request,user)
+
+                    return JsonResponse({"message":"success"})
+
+                    #return HttpResponseRedirect(reverse("success"))
+                else:
+                    return render(request, "core/login.html", {
+                        "message": "Invalid Credentials",
+                        "form":form
+                    })
+            else:
+                return render(request, "core/login.html", {
+                        "message": "Invalid Credentials",
+                        "form":form
+                    })
+    else:
+        form = Login_form()
+        return render(request,"core/login.html",{"form":form})
+
+#logout view
+@login_required
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse("login"))
