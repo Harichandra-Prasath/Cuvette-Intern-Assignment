@@ -64,6 +64,15 @@ If you want to logout , hit up the logout route
 You will be logged out and redirected to the login page  
 
 
+#### Tests
+
+Tests are written with django Testcase for Major Views   
+
+Run  
+```bash
+python manage.py rest
+```
+
 #### Notes
 
 Created a Custom User inheriting django's AbstractUser and Altered Email field  
