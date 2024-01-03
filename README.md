@@ -6,33 +6,33 @@ Clone the repository and Enter into the directory
 
 Create an virtual environment  
 ```bash
-    python -m venv .venv
+python -m venv .venv
 ```
    
 Activate the virtual environment  
 ```bash
-    . .venv/bin/activate
+. .venv/bin/activate
 ```
 
 If you want to prefer global installations, you can ignore the above  
 
 Install the dependencies  
 ```bash
-    pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 Apply migrations and migrate to the database  
 ```bash 
-    python manage.py makemigrations  
-    python manage.py migrate  
+python manage.py makemigrations  
+python manage.py migrate  
 ```
 
 Run the server
 ```bash
-    python manage.py runserver
+python manage.py runserver
 ```
 
-*Now the server is up and serving on port 8000*
+**Now the server is up and serving on port 8000**
 
 ### Usage
 
@@ -40,13 +40,13 @@ Run the server
 
 *All routes are extended from the root(/) path*
   
-/accounts/register/ - Register Route  for New user  
-/accounts/login/    - Login Route for Registered User
-/accounts/logout/   - Logout Route for current Logged User
-/users/profile/     - Profile Route for current Logged User
-/users/dashboard/   - Welcome Route for  Registered User
+**/accounts/register/ - Register Route  for New user**  
+**/accounts/login/    - Login Route for Registered User**    
+**/accounts/logout/   - Logout Route for current Logged User**   
+**/users/profile/     - Profile Route for current Logged User**  
+**/users/dashboard/   - Welcome Route for  Registered User**    
 
-*Debug is set to True, So you can see all available routes in / route*
+**Debug is set to True, So you can see all available routes in / route**
 
 #### Guide
 
