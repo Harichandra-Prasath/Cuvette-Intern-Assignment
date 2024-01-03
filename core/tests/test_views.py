@@ -39,4 +39,27 @@ class RegisterViewTest(TestCase):
         }
         response = self.client.post(reverse('register'),post_body)
         self.assertTrue(response.url.startswith("/accounts/login/"))
+
+class LoginViewTest(TestCase):
+    def setUp(self):
+        test_user = User.objects.create(username="testuser",email="abc@gmail.com")
+        test_user.set_password("abcdefgh")
+        test_user.save()
+
+    def test_login_success_redirect_username(self):
+        post_body = {
+            "IdField":"testuser",
+            "Password":"abcdefgh"
+        }
+        response = self.client.post(reverse('login'),post_body)
+        self.assertTrue(response.url.startswith("/users/dashboard/"))
     
+    def test_login_success_redirect_email(self):
+        post_body = {
+            "IdField":"abc@gmail.com",
+            "Password":"abcdefgh"
+        }
+        response = self.client.post(reverse('login'),post_body)
+        self.assertTrue(response.url.startswith("/users/dashboard/"))
+
+
