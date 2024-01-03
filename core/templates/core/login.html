@@ -1,19 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Login</title>
-    </head>
-    <body>
-        <h2>Login</h2>
+{% extends "core/layout.html" %}
 
-        {%if message %}
-            <div>{{message}}</div>
-        {% endif %}
+{% block title %}
+Register
+{%endblock%}
 
-        <form action="{% url 'login' %}" method="post">
-            {% csrf_token %}
-            {{form}}
-            <input type="submit" value="Login">
-        </form>
-    </body>
-</html>
+
+{% block body %}
+
+    <h2>Register</h2>
+
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form }}
+        </div>
+        <input class="btn btn-primary" type="submit" value="login">
+    </form>
+
+
+{% endblock %}
