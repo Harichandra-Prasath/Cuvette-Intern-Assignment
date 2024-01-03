@@ -70,7 +70,7 @@ Tests are written with django Testcase for Major Views
 
 Run  
 ```bash
-python manage.py rest
+python manage.py test
 ```
 
 #### Notes
