@@ -35,11 +35,17 @@ def register_view(request):
                 # Above create_user function calls make_password() on itself for hashing 
                 # It is same as using set_password() method on the user for password hashing
                 user.save()
-            except IntegrityError:             
-                return render(request,"core/register.hmtl",{
-                    "message":"Username already Exists.Try again",
-                    "form":form
-                })
+            except IntegrityError:
+                if User.objects.filter(username=username).exists():
+                    return render(request,"core/register.html",{
+                        "message":"Username already Exists.Try again",
+                        "form":form
+                    })
+                elif User.objects.filter(email=email).exists():
+                    return render(request,"core/register.html",{
+                        "message":"Already an User with given email account.Try again",
+                        "form":form
+                    })                
                 # we are using integrity error to catch the duplication in db
             return HttpResponseRedirect(reverse("login"))
     else:
@@ -69,8 +75,7 @@ def login_view(request):
                 user = authenticate(request,username=Id_field,password=password)
                 if user is not None:
                     login(request,user)
-                    return JsonResponse({"message":"success"})
-                    #return HttpResponseRedirect(reverse("success"))
+                    return HttpResponseRedirect(reverse("dashboard"))
                 else:
                     return render(request, "core/login.html", {
                         "message": "Invalid Credentials",
@@ -81,10 +86,7 @@ def login_view(request):
                 user = authenticate(request,username=username,password=password)
                 if user is not None:
                     login(request,user)
-
-                    return JsonResponse({"message":"success"})
-
-                    #return HttpResponseRedirect(reverse("success"))
+                    return HttpResponseRedirect(reverse("dashboard"))
                 else:
                     return render(request, "core/login.html", {
                         "message": "Invalid Credentials",
@@ -104,3 +106,22 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("login"))
+
+#User profile
+@login_required
+def profile_view(request):
+    user = request.user     # Getting the authenticated user 
+    context = {
+        "username":user.username,
+        "Email":user.email,
+        "Joined":user.date_joined.date()    
+    }
+    return render(request,"core/profile.html",context)
+
+@login_required
+def dashboard_view(request):
+    user = request.user
+    context = {
+        "username":user.username
+    }
+    return render(request,"core/dashboard.html",context)
