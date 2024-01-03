@@ -46,7 +46,7 @@ python manage.py runserver
 **/users/profile/     - Profile Route for current Logged User**  
 **/users/dashboard/   - Welcome Route for  Registered User**    
 
-**Debug is set to True, So you can see all available routes in / route**
+*Debug is set to True, So you can see all available routes in / route*
 
 #### Guide
 
